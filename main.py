@@ -1,6 +1,5 @@
 import datetime
 from collections import UserDict
-from datetime import date, timedelta
 
 
 class AddressBook(UserDict):
@@ -10,8 +9,17 @@ class AddressBook(UserDict):
     def search_by_records(self, value):
         return value in self.data.values()
 
-    def iterator(self):
-        return self
+    def iterator(self, n):
+        if len(self.data) < n:
+            raise Exception(
+                f'Amount of records in <Address Book> is less then <n> = {n} you have entered')
+        else:
+            data_list = list(self.data.items())
+            while data_list:
+                result = '\n'.join(
+                    [f'Contact <{el[0]}> has following contacts {el[1]}' for el in data_list[:n]])
+                yield result
+                data_list = data_list[n:]
 
 
 class Record:
@@ -61,26 +69,14 @@ class Name(Field):
         self.value = name
 
 
-x = Name("Vasya")
-print(x)
-
-
 class Phone(Field):
     def __init__(self, phone_number):
         self.value = phone_number
 
 
-y = Phone("0937236707")
-print(y)
-
-
 class Birthday(Field):
     def __init__(self, birthday):
         self.value = birthday
-
-
-b = Birthday("29-02-2000")
-print(b)
 
 
 def main():
@@ -90,47 +86,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-ab = AddressBook()
 
-name1 = Name('Bill')
-print(name1)
-phone1 = Phone('123456')
-print(phone1)
-rec = Record(name1, phone1)
-print(rec)
-birthday1 = Record("29.02.2000")
-print(birthday1)
-
-ab.add_record(rec)
-print(ab)
-
-phone2 = Phone('09876')
-rec.edit_phone_number(phone1, phone2)
-print(rec)
-
-name2 = Name("Jill")
-rec2 = Record(name2)
-ab.add_record(rec2)
-print(ab)
-
-# class Iterable:
-#     MAX_VALUE = 10
-#
-#     def __init__(self):
-#         self.current_value = 0
-#
-#     def __next__(self):
-#         if self.current_value < self.MAX_VALUE:
-#             self.current_value += 1
-#             return self.current_value
-#         raise StopIteration
-#
-#
-# class CustomIterator:
-#     def __iter__(self):
-#         return Iterable()
-#
-#
-# c = CustomIterator()
-# for i in c:
-#     print(i)
