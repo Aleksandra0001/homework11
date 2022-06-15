@@ -1,5 +1,8 @@
 import datetime
 from collections import UserDict
+import re
+
+PHONE_REGEX = re.compile(r"^\+?(\d{2})?\(?(0\d{2})\)?(\d{7}$)")
 
 
 class AddressBook(UserDict):
@@ -23,7 +26,7 @@ class AddressBook(UserDict):
 
 
 class Record:
-    def __init__(self, name, phone_number="", birthday=""):
+    def __init__(self, name, phone_number=None, birthday=None):
         self.phone_number = phone_number
         self.name = name
         self.phones = []
@@ -52,7 +55,7 @@ class Record:
 
 
 class Field:
-    def __init__(self):
+    def __init__(self, value):
         self.__value = None
 
     @property
@@ -71,7 +74,14 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, phone_number):
-        self.value = phone_number
+        self.value = valid_phone(phone_number)
+
+
+def valid_phone(phone_number):
+    if bool(re.match(PHONE_REGEX, phone_number)):
+        return phone_number
+    else:
+        return str(f"Phone number {phone_number} is not valid")
 
 
 class Birthday(Field):
@@ -85,5 +95,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
